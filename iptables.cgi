@@ -2,7 +2,9 @@
 
 read POST
 
-#RESULT=$(echo $POST | cut -d '&' -f 1 | cut -d '=' -f 2)
+REGRA=$(echo $POST | cut -d '&' -f 1 | cut -d '=' -f 2)
+PROTOCOLO=$(echo $POST | cut -d '&' -f 2 | cut -d '=' -f 2)
+ACAO=$(echo $POST | cut -d '&' -f 3 | cut -d '=' -f 2)
 
 echo 'Content-type: text/html'
 echo
@@ -13,30 +15,31 @@ echo -e
 
 <body>'
 
-echo "<pre>$(cat /etc/passwd | grep ${RESULT})</pre>"
+echo "<pre>iptables -I ${REGRA} -p ${PROTOCOLO} -s 192.168.0.10/32 -d www.uol.com.br -j ${ACAO}</pre>"
+echo "<pre>$(iptables -L)</pre>"
 
-echo -e ' 
+echo -e '
 <form method='POST'>
+	iptables -I 
+	<select name="regra">
+	<option value="INPUT">INPUT</option>
+	<option value="OUTPUT">OUTPUT</option>
+	<option value="FORWARD">FORWARD</option>
+	</select>
+	-p 
+	<select name="protocolo">
+    	<option value="tcp">tcp</option>
+    	<option value="udp">udp</option>
+	</select>
+	-s 192.168.0.10/32 -d www.uol.com.br -j
+	<select name="acao">
+	<option value="DROP">DROP</option>
+	<option value="ACCEPT">ACCEPT</option>
+	<option value="REJECT">REJECT</option>
+	</select>
 
-iptables -I -p 
-	<select multiple>
-    	<option>tcp</option>
-    	<option>udp</option>
-	</select>  
-	<select multiple>
-    	<option>INPUT</option>
-    	<option>OUTPUT</option>
-    	<option>FORWARD</option>
-	</select>  
-
-	-s 192.168.1.10/32 -d www.uol.com.br -j 
-	<select multiple>
-    	<option>DROP</option>
-    	<option>ACCEPT</option>
-    	<option>REJECT</option>
-	</select>   <br> 
-<br>
-<input type="submit" name="submit" value="Enviar">
+<br><br>
+<input type="submit" name="submit">
 
 </form>
 
