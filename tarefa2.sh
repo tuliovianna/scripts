@@ -10,73 +10,58 @@ echo "
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Iptables</title>
-    <style>
-        .margin{
-            margin-bottom: 5px;
-        }
-    </style>
-</head>
+    <title>Tarefa 2 - Iptables</title>
+    
+    </head>
 <body>
-<h1>IPTABLES</h1>
+<h4>Regras - iptables</h4>
 <form method="get">
-
-    <div class="margin">
-        <label for="parametro">Parâmetro:</label>
+<fieldset>
+           <label for="parametro">Index:</label>
         <select name="parametro" id="parametro">
             <option value='-I'>-I</option>
             <option value='-A'>-A</option>
         </select>
-    </div>
 
-    <div class="margin">
-        <label for="regra">Regra:</label>
+        <label for="regra">Chain:</label>
         <select name="regra" id="regra">
             <option value="INPUT">INPUT</option>
             <option value="OUTPUT">OUTPUT</option>
             <option value="FORWARD">FORWARD</option>
         </select>
-    </div>
 
-    <div class="margin">
         <label for="protocolo">Protocolo:</label>
         <select name="protocolo" id="protocolo">
             <option value="tcp">TCP</option>
             <option value="udp">UDP</option>
         </select>
-    </div>
 
-    <div class="margin">
-        <label for="ip">IP:</label>
+        <label for="ip">Origem:</label>
         <input type="text" name="ip" id="ip">
-    </div>
 
-    <div class="margin">
-        <label for="site">Site:</label>
+
+        <label for="site">Destino:</label>
         <input type="text" name="site" id="site">
-    </div>
 
-    <div class="margin">
-        <label for="comentario">Comentário:</label>
+
+        <label for="comentario">Coment:</label>
         <input type="text" name="comentario" id="comentario">
-    </div>
 
-    <div class="margin">
         <label for="acao">Ação:</label>
         <select name="acao" id="acao">
             <option value="DROP">DROP</option>
             <option value="ACCEPT">ACCEPT</option>
             <option value="REJECT">REJECT</option>
         </select>
-    </div>
 
     <input type="submit" value="Gerar" name="botao">
-    <input type="submit" value="Submeter" name="botao">
+    <input type="submit" value="Gravar" name="botao">
     <input type="submit" value="Flush" name="botao">
 
     <a href=$SCRIPT>
         <button type="button" >Limpar</button>
     </a>
+</fieldset>
 </form>
 "
 
@@ -96,9 +81,9 @@ if [[ $N_QUERY_STRING = 8 ]]; then
   if [[ $BOTAO = "Flush" ]]; then
     N_CHECK_FLUSH=$(sudo iptables -L | wc -l)
     if [[ $N_CHECK_FLUSH -eq 8 ]]; then
-      echo "<pre>Nenhuma existe nenhuma regra pra apagar</pre>"
+      echo "<pre>Iptables sem nenhuma regra.</pre>"
     else
-      echo "<pre>Todas as regras foram apagadas</pre>"
+      echo "<pre>Regras foram apagadas.</pre>"
       echo "<pre>$(sudo iptables -F)</pre>"
     fi
 
@@ -107,16 +92,17 @@ if [[ $N_QUERY_STRING = 8 ]]; then
     if [[ $CHECK_QUERY_STRING -gt 87 ]]; then
 
       if [[ $BOTAO = "Gerar" ]]; then
-        SAIDA=$(echo "Comando gerado: sudo iptables $PARAMETRO $REGRA -p $PROTOCOLO -s $IP -d $SITE -m comment --comment \"$COMENTARIO\" -j $ACAO")
+	
+        SAIDA=$(echo "Regra gerada: sudo iptables $PARAMETRO $REGRA -p $PROTOCOLO -s $IP -d $SITE -m comment --comment \"$COMENTARIO\" -j $ACAO")
         echo "<pre>$SAIDA</pre>"
       fi
-      if [[ $BOTAO = "Submeter" ]]; then
-        SAIDA=$(echo "Comando submetido: sudo iptables $PARAMETRO $REGRA -p $PROTOCOLO -s $IP -d $SITE -m comment --comment \"$COMENTARIO\" -j $ACAO")
+      if [[ $BOTAO = "Gravar" ]]; then
+        SAIDA=$(echo "Regra gravada: sudo iptables $PARAMETRO $REGRA -p $PROTOCOLO -s $IP -d $SITE -m comment --comment \"$COMENTARIO\" -j $ACAO")
         echo "<pre>$SAIDA</pre>"
         echo "<pre>$(sudo iptables $PARAMETRO $REGRA -p $PROTOCOLO -s $IP -d $SITE -m comment --comment \"$COMENTARIO\" -j $ACAO)</pre>"
       fi
     else
-      echo "<pre>Preencha todos os campos.</pre>"
+      echo "<pre>Para criar a regra todos os campos devem ser preenchidos.</pre>"
     fi
 
   fi
@@ -125,11 +111,9 @@ fi
 
 echo "
 <br>
-<hr>
-<h1>LISTAR IPTABLES</h1>
+<h4>Listar Regras</h4>
 <form method="get">
-
-    <div class="margin">
+<fieldset>
         <label for="chain">Chain:</label>
         <select name="chain" id="chain">
             <option value="ALL">ALL</option>
@@ -137,10 +121,9 @@ echo "
             <option value="OUTPUT">OUTPUT</option>
             <option value="FORWARD">FORWARD</option>
         </select>
-    </div>
 
-    <button type="submit">Mostrar</button>
-
+    <button type="submit">Exibir</button>
+</fieldset>
 </form>
 "
 
