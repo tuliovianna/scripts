@@ -144,7 +144,50 @@ if [[ $N_QUERY_STRING = 1 ]]; then
   fi
 fi
 
+echo "
+<br>
+<h4>APAGAR Regras</h4>
+<form method="get">
+<fieldset>
+        <label for="chain">Chain:</label>
+        <select name="chain" id="chain">
+            <option value="ALL">ALL</option>
+            <option value="INPUT">INPUT</option>
+            <option value="OUTPUT">OUTPUT</option>
+            <option value="FORWARD">FORWARD</option>
+        </select>
+
+        <label for="linha">Coment:</label>
+        <input type="text" name="linha" id="linha">
+
+    <button type="submit">Apagar</button>
+</fieldset>
+</form>
+"
+
+if [[ $N_QUERY_STRING = 1 ]]; then
+  CHAIN=$(echo "$QUERY_STRING" | awk -F "=" '{print $2}')
+  LINHA=$(echo "$QUERY_STRING" | awk -F "=" '{print $3}')
+  if [[ $CHAIN = "ALL" ]]; then
+    COMANDO="iptables -L -nv --line-numbers"
+    echo "<pre>Comando: $COMANDO</pre>"
+
+    SAIDA=$(sudo iptables -L -nv --line-numbers)
+    echo "<pre>$SAIDA</pre>"
+  else
+    COMANDO="sudo iptables -D $CHAIN $"
+    echo "<pre>Comando: $COMANDO</pre>"
+
+    SAIDA=$(sudo iptables -L $CHAIN -nv --line-numbers)
+    echo "<pre>$SAIDA</pre>"
+  fi
+fi
+
     echo "
+
+
+
+
   </body>
 </html>
 "
