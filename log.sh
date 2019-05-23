@@ -13,7 +13,7 @@ echo "
 
 <form>
   <fieldset>
-  	Digite o usuário a ser encontrado:
+  	Digite o usuário a ser encontrado: <br> <br>
   	<input type="text" name="pesquisa" placeholder="Buscar Usuário">
   	<input type="submit" value="Buscar">
   </fieldset>
@@ -28,7 +28,7 @@ echo "
 
 <form>
   <fieldset>
- 	Usuario a ser adicionado:
+ 	Usuario a ser adicionado: <br> <br>
   	<input type="text" name="add" placeholder="Adicionar usuário">
   	<input type="submit" name="botao" value="Adicionar">
   </fieldset>
@@ -37,7 +37,7 @@ echo "
 
 <form>
   <fieldset>
-  	Remover Usuário:
+  	Usuario a ser removido: <br> <br>
   	<input type="text" name="remove" placeholder="Excluir usuário">
   	<input type="submit" name="botao" value="Deletar">
   </fieldset>
@@ -47,6 +47,8 @@ echo "
 add=$(echo $QUERY_STRING | awk -F "&" '{print $1}' | awk -F "=" '{print $2}')
 botao=$(echo $QUERY_STRING | awk -F "&" '{print $2}' | awk -F "=" '{print $2}')
 remove=$(echo $QUERY_STRING | awk -F "&" '{print $3}' | awk -F "=" '{print $2}')
+LOG=$(/usr/lib/cgi/bin/arquivo.log)
+NOW=$(date)
 
 if [[ $botao = "Adicionar" ]]; then
   
@@ -55,19 +57,17 @@ if [[ $botao = "Adicionar" ]]; then
   echo "<pre>$(cat /etc/group | grep ${group})</pre>"
 fi
 
-
+CHECK=$(grep -w "$add" /etc/passwd | wc -l)
 if [[ $botao = "Deletar" ]]; then
-
-
-echo "<pre>$(sudo deluser $add)</pre>"
-
-if [ $add == 0 ]
-then
-echo "O Comando xyz foi executado com sucesso" >> /usr/lib/cgi-bin/log.txt
+if [[ $CHECK = 0 ]]; then
+     echo  "Usuario $add não existe."
+   else 
+      echo "<pre>$(sudo deluser $add)</pre>"
+      echo "<pre>$(sudo ./arquivo.sh "$(date +"%d/%m/%Y %H:%M:%S")" "$(users)" "$add" "users")</pre>"
+      echo "<pre style="display: none;">$(sudo date '+Deletado em: %d/%m/%Y %H:%M:%S' | sudo tee -a /usr/lib/cgi-bin/vamos.txt)</pre> + $(sudo date |sudo tee -a /usr/lib/cgi-bin/vamos.txt)"
+   fi
 fi
-
-
-fi
+	fi
 
 echo "
 </body>
